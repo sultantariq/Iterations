@@ -1,0 +1,58 @@
+<head>
+	<!-- Load plotly.js into the DOM -->
+	
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+
+<script>
+
+
+function myScript()
+{
+	plotBarChart();
+
+}
+
+	
+function plotBarChart()
+{
+
+	var graphDiv = document.getElementById('myDiv');
+
+	
+	var trace1 = {
+  x: ['Hafsah', 'Anne', 'Stephine','Jesper'],
+  y: [75, 34, 73,20],
+  name: 'Average Inbound Calls',
+  type: 'bar'
+};
+
+
+	var trace2 = {
+  x: ['Hafsah', 'Anne', 'Stephine','Jesper'],
+  y: [8, 9, 8,10],
+  name: 'Average Outbound Calls',
+  type: 'bar'
+};
+
+
+	var data = [trace1, trace2];
+
+	var layout = {barmode: 'stack'};
+
+
+	Plotly.newPlot(graphDiv, data, layout);
+}
+
+
+	
+</script>
+
+</head>
+
+
+<body onload="myScript()">
+	
+<div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+
+
+</body>
