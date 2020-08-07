@@ -1,0 +1,437 @@
+<head>
+	<!-- Load plotly.js into the DOM -->
+	
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+
+<script>
+
+
+function myScript()
+{
+  plotChart('monthly');
+  plotpiechart();
+	document.getElementById('yearlybutton').onclick= function() {yearlydata();}
+	document.getElementById('monthlybutton').onclick= function() {monthlydata();}
+	document.getElementById('weeklybutton').onclick= function() {weeklydata();}
+	document.getElementById('bonusbutton').onclick= function() {bonusdata();}
+  //tryresponisve();
+
+}
+
+function tryresponisve()
+{
+
+  var trydiv = document.getElementById('tryDiv');
+  var trace1 = {
+    type: 'bar',
+    x: [1, 2, 3, 4],
+    y: [5, 10, 2, 8],
+    marker: {
+        color: '#C8A2C8',
+        line: {
+            width: 2.5
+        }
+    }
+};
+
+var data = [ trace1 ];
+
+var layout = {
+  title: 'Responsive to window size!',
+  font: {size: 18}
+};
+
+Plotly.newPlot('charts', data, layout, {responsive: true});
+}
+
+function yearlydata()
+{
+	plotChart('yearly');
+}	
+
+function monthlydata()
+{
+	plotChart('monthly');
+}
+
+function weeklydata()
+{
+	plotChart('weekly');
+}	
+
+function bonusdata()
+{
+	plotChart('bonus');
+}	
+
+function Feb2020()
+{
+  plotChart('Feb2020');
+} 
+
+function plotChart(val)
+{
+
+var graphDiv = document.getElementById('charts');
+
+
+if (val=='weekly')
+{
+  link="https://gist.githubusercontent.com/sultantariq/680efc8228f3b48f3357ab9185e212c8/raw/31596889a8cbe04dfeba7d650b6f36ca1c1f2fbc/Hafsah_2020_weekly_chart.csv"
+}
+
+else if (val == 'monthly')
+{
+  link="https://gist.githubusercontent.com/sultantariq/1730323bbc3ef632463876438d6e12d6/raw/9ffc4191b77d25aa2f1bd3b9b576b833ad59179d/Hafsah_2020_monthly_chart.csv"
+}
+else if (val == 'bonus')
+{
+	link="https://gist.githubusercontent.com/sultantariq/7c414ece71801c338034efdcfd9038b9/raw/ee2e37e86d501f935b197c680f2ff9a972f0914c/Stephnie_1stbonusdata_chart.csv"
+}
+
+else if (val == 'jan_2020')
+{
+link="https://gist.githubusercontent.com/sultantariq/5153b8f05732ad6dae944bd099587710/raw/d84882d870cb2975ca5b3fe8fcd7edc44c0a2d34/Hafsah_2020_JANweekly_chart.csv"
+}
+
+else
+{
+	link="https://gist.githubusercontent.com/sultantariq/2071def33cc69bf18aa3d2bf8eca5387/raw/059c639e99a4823694ecc2f7b63873d96580780a/monthlytableandgraph.csv"
+}
+
+file=Plotly.d3.csv(
+  link,
+  function(err, rows) {
+    function unpack(rows, key) {
+      return rows.map(function(row) {
+        return row[key];
+      });
+    }
+  // header values
+  var headerNames = Plotly.d3.keys(rows[0]);
+  var headerValues = [headerNames[1],headerNames[2],
+                      headerNames[3],headerNames[4]];
+headerValues_=[]
+
+for (i = 1; i < headerNames.length; i++) {
+
+headerValues_[i]=headerNames[i]
+} 
+
+  // cell values
+  var cellValues = [];
+  for (i = 1; i < headerValues_.length; i++) {
+    cellValue = unpack(rows, headerValues_[i]);
+    cellValues[i] = cellValue;
+  }
+
+  // clean date
+  //for (i = 0; i < cellValues[0].length; i++) {
+  //var dateValue = cellValues[0][i].split(' ')[0]
+  //cellValues[0][i] = dateValue
+  //}
+
+headerValue=headerValues_.slice(1,5);
+cellValue=cellValues.slice(1,5);
+  // create table
+  var table = {
+    type: 'table',
+    columnwidth: [350,250,470,470],
+    columnorder: [0,1,2,3],
+    header: {
+      values: headerValue,
+      align: "center",
+      line: {width: 1, color: 'rgb(50, 50, 50)'},
+      fill: {color: ['rgb(13, 93, 174)']},
+      font: {family: "Arial", size: 11, color: "white"}
+    },
+    cells: {
+      values: cellValue,
+      align: ["center", "center"],
+      line: {color: "black", width: 1},
+      fill: {color: ['rgb(28, 113, 199)', 'rgba(228, 222, 249, 0.65)']},
+      font: {family: "Arial", size: 10, color: ["black"]}
+    },
+    xaxis: 'x',
+    yaxis: 'y',
+    domain: {x: [0,0.4], y: [0,1]}
+  }
+
+
+
+  // create 1st plot
+  var trace1 = {
+    x: unpack(rows, 'Period'),
+    y: unpack(rows, 'In-Ud-sum'),
+    //xaxis: 'x1',
+    //yaxis: 'y1',
+    type: 'bar',
+    //mode: 'lines',
+    //Sline: {width: 2, color: '#9748a1'},
+    name: 'In-Ud-sum'
+  }
+  // create 2nd plot
+  var trace2 = {
+    x: unpack(rows, 'Period'),
+    y: unpack(rows, 'Indgaende-Opkald-per-dag'),
+    //xaxis: 'x2',
+    //yaxis: 'y2',
+    type: 'bar',
+    //mode: 'lines',
+    //line: {width: 2, color: '#b04553'},
+    name: 'Indgaende-Opkald-per-dagg'
+  }
+
+  // create 3rd plot
+  var trace3 = {
+    x: unpack(rows, 'Period'),
+    y: unpack(rows, 'Udgaende-Opkald-per-dag'),
+    //xaxis: 'x3',
+    //yaxis: 'y3',
+    type: 'bar',
+    //mode: 'lines',
+    //line: {width: 2, color: '#af7bbd'},
+    name: 'Udgaende-Opkald-per-dag'
+  }
+
+var data_for=[];
+
+for (i = 0; i < 3; i++) {
+data_for[i]= {x: unpack(rows, headerNames[1]),
+    y: unpack(rows, headerNames[i+2]),
+    //xaxis: 'x1',
+    //yaxis: 'y1',
+    type: 'bar',
+    //mode: 'lines',
+    //Sline: {width: 2, color: '#9748a1'},
+    name: headerNames[i+2]
+}
+  }
+
+
+
+
+  //var data = [trace1,trace2,trace3];
+  var tab= [table];
+
+
+console.log(data_for);
+
+  // define subplot axes
+  var axis = {
+    showline: true,
+    zeroline: false,
+    showgrid: true,
+    mirror:true,
+    ticklen: 4,
+    gridcolor: '#ffffff',
+    tickfont: {size: 10},
+  }
+
+  //var axis1 = {domain: [0.5, 1], anchor: 'y1', showticklabels: false}
+  //var axis2 = {domain: [0.5, 1], anchor: 'y2', showticklabels: false}
+  //var axis3 = {domain: [0.5, 1], anchor: 'y3'}
+  //var axis4 = {domain: [0.66, 0.98], anchor: 'x1'}
+  //var axis5 = {domain: [0.34, 0.64], anchor: 'x2'}
+  //var axis6 = {domain: [0.0, 0.32], anchor: 'x3', hoverformat: '.2f'}
+  //var axis5 = {domain: [0.34, 0.64], anchor: 'x2', tickprefix: '$', hoverformat: '.2f'}
+  //var axis6 = {domain: [0.0, 0.32], anchor: 'x3', tickprefix: '\u20BF', hoverformat: '.2f'}
+
+  // define layout
+  var layout = {
+    title: "Stephnie's "+val+" data",
+    //plot_bgcolor: 'rgba(228, 222, 249, 0.65)',
+    showlegend: false,
+    //xaxis1: Object.assign(axis1,axis),
+    //xaxis2: Object.assign(axis2,axis),
+    //xaxis3: Object.assign(axis3,axis),
+    //yaxis1: Object.assign(axis4,axis),
+    //yaxis2: Object.assign(axis5,axis),
+    //yaxis3: Object.assign(axis6,axis),
+    barmode: 'stack',
+    autosize: true,
+
+  }
+  var lay = {
+    width: 1400,
+
+  }
+
+
+  //var layout = {barmode: 'stack'};
+  Plotly.newPlot('table', tab,lay,{displaylogo: false},{responsive: true});
+  Plotly.newPlot('chartplot', data_for, layout,{displaylogo: false},{responsive: true});
+
+
+
+});
+
+document.getElementById('table').onclick= function(e) {
+
+
+if (e.target.__data__.value=='Feb2020')
+        plotChart('Feb2020');
+  }
+
+document.getElementById('chartplot').onclick= function(e) {
+
+
+
+  }
+
+
+}
+function plotpiechart()
+{
+link="https://gist.githubusercontent.com/sultantariq/20582a70d8b10fb508576cfb4dfba0f1/raw/ec5e3a670a9621d22d7fc0330cf79c0ba54ee32b/pie_sample_data.csv";
+file2=Plotly.d3.csv(
+  link,
+  function(err, rows) {
+    function unpack(rows, key) {
+      return rows.map(function(row) {
+        return row[key];
+      });
+    }
+var headerNames = Plotly.d3.keys(rows[0]);
+
+period=[]
+
+  for (i = 0; i < headerNames.length; i++) {
+    cellValue = unpack(rows, headerNames[i]);
+    period[i] = cellValue;
+   
+  }
+
+var cellValues = [];
+  for (i = 1; i < headerNames.length; i++) {
+    cellValue = unpack(rows, headerNames[i]);
+    cellValues[i] = cellValue;
+   
+  }
+
+
+//to get every first value from cellValues Array so that data of a row is in one array
+new_val=[];
+
+  for (i = 0; i < headerNames.length; i++) {
+new_val[i]=cellValues.map(function(x) {
+        return x[i];
+    });
+}
+
+
+
+var data = [{
+  values: new_val[0],
+
+  type: 'pie',
+  name: period[0][0],
+  labels: headerNames,
+  domain: {
+    row: 0,
+    column: 0
+  },
+  hoverinfo: 'headerNames',
+},{
+  values: new_val[1],
+  labels: headerNames,
+  type: 'pie',
+ name: period[0][1],
+  domain: {
+    row: 1,
+    column: 0
+  },
+  hoverinfo: 'headerNames',
+ 
+}];
+
+new_data=[]
+for (i=0; i<rows.length; i++)
+{
+new_data[i] = {
+  values: new_val[i],
+
+  type: 'pie',
+  name: period[0][i],
+  labels: headerNames,
+  domain: {
+    row: i%3,
+    column: i%4
+  },
+  hoverinfo: 'headerNames',
+};
+}
+
+
+var layout = {
+  height: 800,
+  width: 1000,
+  grid: {rows: 3, columns: 4}
+};
+
+
+Plotly.newPlot('pieDiv', new_data,layout);
+ });
+
+
+
+
+
+
+}
+
+	
+</script>
+<style>
+h3  {color:black;}
+h3 .colorTwo {color:green;}
+
+#table {float : left;}
+#chartplot {float : left;}
+
+#charts{
+  width:100%;
+}
+
+#table, #chartplot{
+  float:left;
+  width:50%;
+
+}
+
+#pieDiv
+{
+float:right;
+}
+
+</style>
+
+
+</head>
+
+
+<body onload="myScript()">
+  <div id="buttons">
+<button type="button" id="yearlybutton">Year</button>
+<button type="button" id="monthlybutton">Month</button>
+<button type="button" id="weeklybutton">Week</button>
+<button type="button" id="bonusbutton">1st Bonus Status</button>
+</div>
+<div id="charts">
+  <div id='table'></div>
+  <div id='chartplot'></div>
+  <div id='pieDiv'></div>
+  <div id='tryDiv'></div>
+</div>
+
+
+
+
+<div>
+<h1>Suggestions for achieving KPI / Bonus</h1>
+<h2>KPI : 75</h2>
+
+<h3>Current Calls Average:<span class="colorTwo"> 80</span></h3>
+<h3>Average Calls needed in coming days:<span class="colorTwo"> 70</span></h3>
+</div>
+</body>
